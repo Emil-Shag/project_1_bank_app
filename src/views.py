@@ -4,6 +4,7 @@ from src.utils import get_cards, get_currency_rates, get_greeting, get_stock_pri
 
 
 def main_page(date_time: str):
+    """Функция, определяющая логику главной страницы"""
     greeting = get_greeting()
     cards = get_cards(date_time)
     top_transactions = get_top_transactions(date_time)

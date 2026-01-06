@@ -10,7 +10,7 @@ load_dotenv()
 
 
 def get_greeting():
-    """Приветствие в зависимости от текущего времени"""
+    """Функция, выводящая приветствие в зависимости от текущего времени"""
     current_date_time = datetime.datetime.now()
     if 5 <= current_date_time.hour < 12:
         return "Доброе утро"
@@ -76,12 +76,14 @@ def get_top_transactions(date_time):
 
 
 def open_user_settings():
+    """Функция, открывающая файл с пользовательскими настройками"""
     with open("data/user_settings.json", "r", encoding="utf-8") as f:
         settings = json.load(f)
     return settings
 
 
 def get_currency_rates():
+    """Функция, запрашивающая курс валют"""
     settings = open_user_settings()
     currencies = settings["user_currencies"]
     currency_rates_list = []
@@ -96,6 +98,7 @@ def get_currency_rates():
 
 
 def get_stock_prices():
+    """Функция, запрашивающая стоимость акций"""
     settings = open_user_settings()
     stocks = settings["user_stocks"]
     symbols_str = ",".join(stocks)

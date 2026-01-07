@@ -1,9 +1,17 @@
+import logging
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any, Optional
 
 import pandas as pd
+
+logger = logging.getLogger("reports.log")
+file_handler = logging.FileHandler("reports.log", "w")
+file_formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
 
 
 def record_result(func: Any) -> Any:
@@ -39,5 +47,5 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: Option
     ]
 
     filtered_operations = filtered_operations[filtered_operations["Сумма платежа"] < 0]
-
+    logger.info("Функция (spending_by_category) подсчитала сумму трат по выбранной категории")
     return filtered_operations

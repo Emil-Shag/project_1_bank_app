@@ -1,9 +1,17 @@
+import logging
 import math
 from typing import Any, Dict, List
 
 import pandas as pd
 
 from src.utils import open_xlsx
+
+logger = logging.getLogger("services.log")
+file_handler = logging.FileHandler("services.log", "w")
+file_formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
 
 
 def prepare_transactions() -> List[Dict]:
@@ -12,6 +20,7 @@ def prepare_transactions() -> List[Dict]:
     columns = ["Дата платежа", "Сумма операции"]
     data_filtered = data[columns]
     result = data_filtered.to_dict(orient="records")
+    logger.info("Функция (prepare_transactions) открыла файл и оставила нужные колонки")
     return result
 
 
@@ -27,4 +36,5 @@ def investment_bank(month: str, transactions: List[Dict[str, Any]], limit: int) 
                 transaction["Сумма операции"]
             )
             invest_sum += invest_num
+    logger.info("Функция (investment_bank) подсчитала сумму, которую удалось бы отложить в копилку")
     return round(invest_sum, 2)

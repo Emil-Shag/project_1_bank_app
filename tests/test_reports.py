@@ -1,21 +1,27 @@
-import pytest
-import pandas as pd
 from unittest.mock import patch
+
+import pandas as pd
+import pytest
+
 from src.reports import spending_by_category
+
 
 @pytest.fixture
 def sample_transactions():
     data = {
         "Дата операции": ["2026-01-01", "2025-12-01", "2025-10-01", "2025-09-01"],
         "Категория": ["Еда", "Еда", "Транспорт", "Еда"],
-        "Сумма платежа": [-100, -50, -20, -200]
+        "Сумма платежа": [-100, -50, -20, -200],
     }
     return pd.DataFrame(data)
 
+
 def test_spending_by_category_basic(sample_transactions):
-    with patch("src.reports.Path.mkdir") as mock_mkdir, \
-         patch("src.reports.pd.DataFrame.to_json") as mock_to_json, \
-         patch("src.reports.logger") as mock_logger:
+    with (
+        patch("src.reports.Path.mkdir") as mock_mkdir,
+        patch("src.reports.pd.DataFrame.to_json") as mock_to_json,
+        patch("src.reports.logger") as mock_logger,
+    ):
         result = spending_by_category(sample_transactions, "Еда", date="2026-01-02")
 
         # Исправлено: name должен совпадать

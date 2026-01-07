@@ -1,17 +1,20 @@
-import pytest
-import pandas as pd
 from unittest.mock import patch
-from src.services import prepare_transactions, investment_bank
+
+import pandas as pd
+import pytest
+
+from src.services import investment_bank, prepare_transactions
 
 
 def test_prepare_transactions():
 
-    data = pd.DataFrame({
-        "Дата платежа": ["01.01.2026", "05.01.2026"],
-        "Сумма операции": [-100, 200],
-        "Категория": ["Еда", "Транспорт"]
-    })
-
+    data = pd.DataFrame(
+        {
+            "Дата платежа": ["01.01.2026", "05.01.2026"],
+            "Сумма операции": [-100, 200],
+            "Категория": ["Еда", "Транспорт"],
+        }
+    )
 
     with patch("src.services.open_xlsx", return_value=data) as mock_open:
 
@@ -20,7 +23,7 @@ def test_prepare_transactions():
 
             expected = [
                 {"Дата платежа": "01.01.2026", "Сумма операции": -100},
-                {"Дата платежа": "05.01.2026", "Сумма операции": 200}
+                {"Дата платежа": "05.01.2026", "Сумма операции": 200},
             ]
             assert result == expected
 
@@ -28,6 +31,7 @@ def test_prepare_transactions():
             mock_logger.info.assert_called_once_with(
                 "Функция (prepare_transactions) открыла файл и оставила нужные колонки"
             )
+
 
 @pytest.fixture
 def sample_transactions():
@@ -39,6 +43,7 @@ def sample_transactions():
         {"Дата платежа": "10.02.2026", "Сумма операции": -75},
     ]
 
+
 @pytest.mark.parametrize(
     "month,limit,expected_sum",
     [
@@ -46,7 +51,7 @@ def sample_transactions():
         ("2026-02", 50, 25),
         ("2026-01", 100, 150),
         ("2026-03", 50, 0),
-    ]
+    ],
 )
 def test_investment_bank_param(sample_transactions, month, limit, expected_sum):
     with patch("src.services.logger") as mock_logger:

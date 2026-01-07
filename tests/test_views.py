@@ -1,11 +1,15 @@
-import pytest
-from unittest.mock import patch
 import json
+from unittest.mock import patch
+
+import pytest
+
 from src.views import main_page
+
 
 @pytest.fixture
 def sample_date_time():
     return "2026-01-20 00:00:00"
+
 
 def test_main_page_basic(sample_date_time):
 
@@ -15,12 +19,14 @@ def test_main_page_basic(sample_date_time):
     mock_currency_rates = [{"currency": "USD", "rate": 80}]
     mock_stock_prices = [{"stock": "AAPL", "price": 150.5}]
 
-    with patch("src.views.get_greeting", return_value=mock_greeting) as mock_greet, \
-         patch("src.views.get_cards", return_value=mock_cards) as mock_cards_func, \
-         patch("src.views.get_top_transactions", return_value=mock_top_transactions) as mock_top, \
-         patch("src.views.get_currency_rates", return_value=mock_currency_rates) as mock_rates, \
-         patch("src.views.get_stock_prices", return_value=mock_stock_prices) as mock_stocks, \
-         patch("src.views.logger") as mock_logger:
+    with (
+        patch("src.views.get_greeting", return_value=mock_greeting) as mock_greet,
+        patch("src.views.get_cards", return_value=mock_cards) as mock_cards_func,
+        patch("src.views.get_top_transactions", return_value=mock_top_transactions) as mock_top,
+        patch("src.views.get_currency_rates", return_value=mock_currency_rates) as mock_rates,
+        patch("src.views.get_stock_prices", return_value=mock_stock_prices) as mock_stocks,
+        patch("src.views.logger") as mock_logger,
+    ):
 
         result_json = main_page(sample_date_time)
         result = json.loads(result_json)

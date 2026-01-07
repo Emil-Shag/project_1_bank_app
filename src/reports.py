@@ -1,33 +1,28 @@
-import pandas as pd
-from typing import Optional
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
+from typing import Any, Optional
 
-def record_result(func):
+import pandas as pd
+
+
+def record_result(func: Any) -> Any:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         df = func(*args, **kwargs)
 
         reports_dir = Path("reports")
         reports_dir.mkdir(exist_ok=True)
         filename = "reports_result.json"
         file_path = reports_dir / filename
-        df.to_json(
-            file_path,
-            orient="records",
-            force_ascii=False,
-            date_format="iso",
-            indent=4
-        )
+        df.to_json(file_path, orient="records", force_ascii=False, date_format="iso", indent=4)
         return df
+
     return wrapper
 
 
 @record_result
-def spending_by_category(transactions: pd.DataFrame,
-                         category: str,
-                         date: Optional[str] = None) -> pd.DataFrame:
+def spending_by_category(transactions: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame:
     """Функция, возвращающая траты по заданной категории за последние три месяца"""
     if date is None:
         finish_date = datetime.now()
@@ -40,10 +35,8 @@ def spending_by_category(transactions: pd.DataFrame,
     df["Дата операции"] = pd.to_datetime(df["Дата операции"])
 
     filtered_operations = df[
-        (df["Категория"] == category) &
-        (df["Дата операции"] >= start_date) &
-        (df["Дата операции"] <= finish_date)
-        ]
+        (df["Категория"] == category) & (df["Дата операции"] >= start_date) & (df["Дата операции"] <= finish_date)
+    ]
 
     filtered_operations = filtered_operations[filtered_operations["Сумма платежа"] < 0]
 

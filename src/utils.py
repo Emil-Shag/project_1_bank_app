@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+from typing import Any, Dict, List
 
 import pandas as pd
 import requests
@@ -9,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_greeting():
+def get_greeting() -> str:
     """Функция, выводящая приветствие в зависимости от текущего времени"""
     current_date_time = datetime.datetime.now()
     if 5 <= current_date_time.hour < 12:
@@ -22,14 +23,14 @@ def get_greeting():
         return "Доброй ночи"
 
 
-def open_xlsx():
+def open_xlsx() -> pd.DataFrame:
     """Функция, считывающая данные с xlsx файла"""
     excel_data = pd.read_excel("data/operations.xlsx")
     excel_data["Дата операции"] = pd.to_datetime(excel_data["Дата операции"], format="%d.%m.%Y %H:%M:%S")
     return excel_data
 
 
-def filter_operations(date_time):
+def filter_operations(date_time: str) -> pd.DataFrame:
     """Функция, фильтрующая операции по дате"""
     finish_date = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S")
     start_date = finish_date.replace(day=1)
@@ -40,7 +41,7 @@ def filter_operations(date_time):
     return filtered_operations
 
 
-def get_cards(date_time):
+def get_cards(date_time: str) -> list:
     """Функция, формирующая список карт с общей суммой расходов и кешбэком"""
     filtered_operations = filter_operations(date_time)
     cards_grouped = filtered_operations.groupby("Номер карты")
@@ -57,7 +58,7 @@ def get_cards(date_time):
     return cards_list
 
 
-def get_top_transactions(date_time):
+def get_top_transactions(date_time: str) -> List[Dict]:
     """Функция, которая выводит топ-5 транзакций по сумме платежа"""
     filtered_operations = filter_operations(date_time)
     filtered_operations["Сумма операции"] = filtered_operations["Сумма операции"].abs()
@@ -75,14 +76,14 @@ def get_top_transactions(date_time):
     return top_transactions_list
 
 
-def open_user_settings():
+def open_user_settings() -> Any:
     """Функция, открывающая файл с пользовательскими настройками"""
     with open("data/user_settings.json", "r", encoding="utf-8") as f:
         settings = json.load(f)
     return settings
 
 
-def get_currency_rates():
+def get_currency_rates() -> List[Dict]:
     """Функция, запрашивающая курс валют"""
     settings = open_user_settings()
     currencies = settings["user_currencies"]
@@ -97,7 +98,7 @@ def get_currency_rates():
     return currency_rates_list
 
 
-def get_stock_prices():
+def get_stock_prices() -> List[Dict]:
     """Функция, запрашивающая стоимость акций"""
     settings = open_user_settings()
     stocks = settings["user_stocks"]
